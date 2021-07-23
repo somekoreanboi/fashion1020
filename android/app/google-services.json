@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "961603560289",
+    "project_id": "fashion1020-683f3",
+    "storage_bucket": "fashion1020-683f3.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:961603560289:android:9ca2a81dcdf9b5c2de9b20",
+        "android_client_info": {
+          "package_name": "com.jaewon.fashion1020"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "961603560289-t6j18h0c4l95hml1vbb8vtj5u999h9d4.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.jaewon.fashion1020",
+            "certificate_hash": "18c91b06df2f3c4ba2e3f931570fe8986478f1f6"
+          }
+        },
+        {
+          "client_id": "961603560289-i97cj6t30fujo0c8a00q7g1251sum7e8.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNoeDMGZRULb3orSxrsrjqv2W0oCzJyCo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "961603560289-i97cj6t30fujo0c8a00q7g1251sum7e8.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
