@@ -1,4 +1,5 @@
 import 'package:animated_splash_screen/animated_splash_screen.dart';
+import 'package:fashion1020/managers/auth_manager.dart';
 import 'package:fashion1020/widgets/my_tabbed_pages.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,10 @@ class MySplashScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AnimatedSplashScreen(
-        function: () => Firebase.initializeApp(),
+        function: () async {
+          Firebase.initializeApp();
+          AuthManager().tryInitialLogin();
+        },
         duration: 3000,
         splash: 'images/beta_splash.png',
         splashIconSize: 200,

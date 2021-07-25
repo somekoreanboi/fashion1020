@@ -1,9 +1,15 @@
 import 'package:bubble/bubble.dart';
+import 'package:fashion1020/screens/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
-class ViewScreen extends StatelessWidget {
+class ViewScreen extends StatefulWidget {
+  @override
+  _ViewScreenState createState() => _ViewScreenState();
+}
+
+class _ViewScreenState extends State<ViewScreen> {
   void showReportDialog(BuildContext context) {
     showDialog(
       context: context,
@@ -87,6 +93,9 @@ class ViewScreen extends StatelessWidget {
     );
   }
 
+  ScrollPhysics physics = PageScrollPhysics();
+  bool showIcons = true;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -95,117 +104,132 @@ class ViewScreen extends StatelessWidget {
           children: [
             PageView(
               scrollDirection: Axis.vertical,
+              physics: physics,
               children: [
-                Image(
+                buildHpb(
                   image: NetworkImage(
                       'https://t1.daumcdn.net/cfile/tistory/230FB74258C3551F18'),
-                  fit: BoxFit.cover,
                 ),
-                Image(
+                buildHpb(
                   image: NetworkImage(
                       'https://t1.daumcdn.net/cfile/tistory/2160894258C3552019'),
-                  fit: BoxFit.cover,
                 ),
               ],
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Column(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: FloatingActionButton(
-                        heroTag: 'fashionInfo',
-                        onPressed: () {
+            Visibility(
+              visible: showIcons,
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  Column(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      buildSideIcon(
+                        context: context,
+                        heroTag: 'fashion_info',
+                        icon: FaIcon(
+                          FontAwesomeIcons.tshirt,
+                        ),
+                        onPress: () {
                           showModalBottomSheet(
                               backgroundColor: Colors.black.withOpacity(0.5),
                               context: context,
                               builder: buildFashionInfoBottomSheet);
                         },
-                        backgroundColor: Colors.red,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          child: FaIcon(
-                            FontAwesomeIcons.tshirt,
-                          ),
-                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: FloatingActionButton(
+                      buildSideIcon(
+                        context: context,
                         heroTag: 'like',
-                        backgroundColor: Colors.yellow,
-                        onPressed: () {},
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          child: FaIcon(
-                            FontAwesomeIcons.thumbsUp,
-                          ),
-                        ),
+                        icon: FaIcon(FontAwesomeIcons.thumbsUp),
+                        onPress: () {},
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: FloatingActionButton(
+                      buildSideIcon(
+                        context: context,
                         heroTag: 'share',
-                        onPressed: () {},
-                        backgroundColor: Colors.green,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          child: FaIcon(
-                            FontAwesomeIcons.shareAltSquare,
-                          ),
+                        icon: FaIcon(
+                          FontAwesomeIcons.shareAltSquare,
                         ),
+                        onPress: () {},
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: FloatingActionButton(
+                      buildSideIcon(
+                        context: context,
                         heroTag: 'report',
-                        onPressed: () {
+                        icon: FaIcon(
+                          FontAwesomeIcons.fileSignature,
+                        ),
+                        onPress: () {
                           showReportDialog(context);
                         },
-                        backgroundColor: Colors.blue,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          child: FaIcon(
-                            FontAwesomeIcons.fileSignature,
-                          ),
-                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: FloatingActionButton(
+                      buildSideIcon(
+                        context: context,
                         heroTag: 'comments',
-                        onPressed: () {
+                        icon: FaIcon(
+                          FontAwesomeIcons.comments,
+                        ),
+                        onPress: () {
                           showModalBottomSheet(
                               backgroundColor: Colors.black.withOpacity(0.5),
                               context: context,
                               builder: buildCommentBottomSheet);
                         },
-                        backgroundColor: Colors.purple,
-                        child: CircleAvatar(
-                          backgroundColor: Colors.white,
-                          foregroundColor: Colors.black,
-                          child: FaIcon(
-                            FontAwesomeIcons.comments,
-                          ),
-                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  PageView buildHpb({
+    required ImageProvider image,
+  }) {
+    return PageView(
+      onPageChanged: (int index) {
+        setState(
+          () {
+            if (index == 1) {
+              showIcons = false;
+              physics = NeverScrollableScrollPhysics();
+            } else {
+              showIcons = true;
+              physics = PageScrollPhysics();
+            }
+          },
+        );
+      },
+      scrollDirection: Axis.horizontal,
+      children: [
+        Image(
+          image: image,
+          fit: BoxFit.cover,
+        ),
+        ProfileScreen(
+          displayName: '박진성',
+        ),
+      ],
+    );
+  }
+
+  Padding buildSideIcon(
+      {required BuildContext context,
+      required String heroTag,
+      required Widget icon,
+      required VoidCallback onPress}) {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: FloatingActionButton(
+        heroTag: heroTag,
+        onPressed: onPress,
+        backgroundColor: Colors.black,
+        child: CircleAvatar(
+          backgroundColor: Colors.white,
+          foregroundColor: Colors.black,
+          child: icon,
         ),
       ),
     );

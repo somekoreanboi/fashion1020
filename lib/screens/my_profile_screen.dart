@@ -1,9 +1,10 @@
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:fashion1020/managers/auth_manager.dart';
+import 'package:fashion1020/screens/profile_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:provider/provider.dart';
 
 class MyProfileScreen extends StatefulWidget {
   @override
@@ -11,30 +12,27 @@ class MyProfileScreen extends StatefulWidget {
 }
 
 class _MyProfileScreenState extends State<MyProfileScreen> {
-  UserCredential? userCredential;
-
-  void signInWithGoogle() async {
-    final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
-    final GoogleSignInAuthentication googleAuth =
-        await googleUser!.authentication;
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleAuth.accessToken,
-      idToken: googleAuth.idToken,
-    );
-    userCredential =
-        await FirebaseAuth.instance.signInWithCredential(credential);
-  }
-
   @override
   Widget build(BuildContext context) {
-    if (userCredential == null) {
-      return buildNotLoginScreen();
-    } else {
-      return buildLoginScreen();
-    }
+    return Consumer<AuthManager>(builder: (context, authManager, child) {
+      try {
+        if (authManager.checkIfValidAuth()) {
+          return buildLoginScreen(authManager);
+        } else {
+          return buildNotLoginScreen(authManager);
+        }
+      } catch (e) {
+        return buildNotLoginScreen(authManager);
+      }
+      // if (!authManager.isUserSignedIn()) {
+      //   return buildNotLoginScreen(authManager);
+      // } else {
+      //   return buildLoginScreen(authManager);
+      // }
+    });
   }
 
-  Container buildNotLoginScreen() {
+  Container buildNotLoginScreen(AuthManager authManager) {
     return Container(
       color: Colors.black,
       child: SingleChildScrollView(
@@ -88,28 +86,28 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
               Buttons.Email,
               text: '이메일로 로그인',
               onPressed: () {
-                signInWithGoogle();
+                authManager.signInWithGoogle();
               },
             ),
             SignInButton(
               Buttons.Google,
               text: '구글 계정으로 로그인',
               onPressed: () {
-                signInWithGoogle();
+                authManager.signInWithGoogle();
               },
             ),
             SignInButton(
               Buttons.Facebook,
               text: '페이스북 계정으로 로그인',
               onPressed: () {
-                signInWithGoogle();
+                authManager.signInWithGoogle();
               },
             ),
             RaisedButton(
               onPressed: () {
-                print(userCredential!.user);
-                print(userCredential!.additionalUserInfo);
-                print(userCredential!.additionalUserInfo);
+                // print(AuthManager.userCredential!.user);
+                // print(AuthManager.userCredential!.additionalUserInfo);
+                // print(AuthManager.userCredential!.additionalUserInfo);
               },
               child: Text('회원가입'),
               shape: RoundedRectangleBorder(
@@ -125,8 +123,33 @@ class _MyProfileScreenState extends State<MyProfileScreen> {
     );
   }
 
-  Container buildLoginScreen() {
-    return Container(
-        color: Colors.red, height: 300, child: (Text('logged in now')));
+  Widget buildLoginScreen(AuthManager authManager) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        (SignInButton(
+          Buttons.Google,
+          text: '로그아웃',
+          onPressed: () {
+            authManager.signOut();
+          },
+        )),
+        (SignInButton(
+          Buttons.Google,
+          text: '내 프로필 조회',
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Material(
+                    type: MaterialType.transparency,
+                    child: ProfileScreen(
+                        displayName: authManager.getDisplayName()!)),
+              ),
+            );
+          },
+        )),
+      ],
+    );
   }
 }

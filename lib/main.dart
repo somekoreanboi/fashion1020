@@ -1,3 +1,4 @@
+import 'package:fashion1020/managers/auth_manager.dart';
 import 'package:fashion1020/screens/my_profile_screen.dart';
 import 'package:fashion1020/screens/notification_screen.dart';
 import 'package:fashion1020/screens/post_screen.dart';

@@ -1,4 +1,5 @@
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
+import 'package:fashion1020/managers/auth_manager.dart';
 import 'package:fashion1020/screens/my_profile_screen.dart';
 import 'package:fashion1020/screens/notification_screen.dart';
 import 'package:fashion1020/screens/post_screen.dart';
@@ -6,6 +7,7 @@ import 'package:fashion1020/screens/search_screen.dart';
 import 'package:fashion1020/screens/view_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:provider/provider.dart';
 
 class MyTabbedPages extends StatefulWidget {
   @override
@@ -77,32 +79,36 @@ class _MyTabbedPagesState extends State<MyTabbedPages>
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        bottomNavigationBar: ConvexAppBar(
-          style: TabStyle.fixedCircle,
-          backgroundColor: Colors.black,
-          onTap: (int i) {
-            setState(
-              () {
-                _myPageController.animateToPage(i,
-                    duration: Duration(milliseconds: 500), curve: Curves.ease);
-              },
-            );
-          },
-          controller: _tabController,
-          items: myItems,
-        ),
-        body: PageView(
-          controller: _myPageController,
-          onPageChanged: (newIndex) {
-            setState(
-              () {
-                _currentIndex = newIndex;
-              },
-            );
-          },
-          physics: NeverScrollableScrollPhysics(),
-          children: myTabs,
-        ));
+    return ChangeNotifierProvider(
+      create: (context) => AuthManager(),
+      child: Scaffold(
+          bottomNavigationBar: ConvexAppBar(
+            style: TabStyle.fixedCircle,
+            backgroundColor: Colors.black,
+            onTap: (int i) {
+              setState(
+                () {
+                  _myPageController.animateToPage(i,
+                      duration: Duration(milliseconds: 500),
+                      curve: Curves.ease);
+                },
+              );
+            },
+            controller: _tabController,
+            items: myItems,
+          ),
+          body: PageView(
+            controller: _myPageController,
+            onPageChanged: (newIndex) {
+              setState(
+                () {
+                  _currentIndex = newIndex;
+                },
+              );
+            },
+            physics: NeverScrollableScrollPhysics(),
+            children: myTabs,
+          )),
+    );
   }
 }
